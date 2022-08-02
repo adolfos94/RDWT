@@ -87,7 +87,7 @@ public class TrailDrawer : MonoBehaviour {
     public void ClearTrail(string trailName)
     {
         Transform trail;
-        if ((trail = trailParent.FindChild(trailName)) != null)
+        if ((trail = trailParent.Find(trailName)) != null)
             Destroy(trail.gameObject);
     }
 

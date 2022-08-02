@@ -3,14 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using Redirection;
 
-public class SimulationManager : MonoBehaviour {
-
+public class SimulationManager : MonoBehaviour
+{
     [HideInInspector]
     public RedirectionManager redirectionManager;
 
     //enum AlgorithmChoice { S2C, S2O, GreedyTransGain, S2C_GreedyTransGain, S2O_GreedyTransGain, CenterBased, CenterBasedTransGainSpeedUp, S2C_CenterBasedTransGainSpeedUp, S2O_CenterBasedTransGainSpeedUp, None };
     enum ExperimentChoice { FixedTrackedSpace, VaryingSizes, VaryingShapes };
-    enum AlgorithmChoice {None, S2C, S2O, Zigzag};
+    enum AlgorithmChoice { None, S2C, S2O, Zigzag };
     enum PathSeedChoice { Office, ExplorationSmall, ExplorationLarge, LongWalk, ZigZag };
     enum ResetChoice { None, TwoOneTurn };
 
@@ -43,10 +43,9 @@ public class SimulationManager : MonoBehaviour {
     [SerializeField]
     ExperimentChoice condExperiment;
 
-
     [SerializeField]
     float MAX_TRIALS = 10f;
-    
+
     [SerializeField]
     bool runAtFullSpeed = false;
     [SerializeField]
@@ -76,8 +75,6 @@ public class SimulationManager : MonoBehaviour {
     public int waypointIterator = 0;
     [HideInInspector]
     public bool userIsWalking = false;
-
-    
 
     public struct InitialConfiguration
     {
@@ -153,7 +150,7 @@ public class SimulationManager : MonoBehaviour {
 
     VirtualPathGenerator.PathSeed getPathSeedExplorationLarge()
     {
-        VirtualPathGenerator.SamplingDistribution distanceSamplingDistribution = new VirtualPathGenerator.SamplingDistribution(VirtualPathGenerator.DistributionType.Uniform,8, 12);
+        VirtualPathGenerator.SamplingDistribution distanceSamplingDistribution = new VirtualPathGenerator.SamplingDistribution(VirtualPathGenerator.DistributionType.Uniform, 8, 12);
         VirtualPathGenerator.SamplingDistribution angleSamplingDistribution = new VirtualPathGenerator.SamplingDistribution(VirtualPathGenerator.DistributionType.Uniform, -180, 180);
         int waypointCount = 100;
         return new VirtualPathGenerator.PathSeed(distanceSamplingDistribution, angleSamplingDistribution, waypointCount);
@@ -183,15 +180,19 @@ public class SimulationManager : MonoBehaviour {
             case PathSeedChoice.Office:
                 pathSeeds.Add(getPathSeedOfficeBuilding());
                 break;
+
             case PathSeedChoice.ExplorationSmall:
                 pathSeeds.Add(getPathSeedExplorationSmall());
                 break;
+
             case PathSeedChoice.ExplorationLarge:
                 pathSeeds.Add(getPathSeedExplorationLarge());
                 break;
+
             case PathSeedChoice.LongWalk:
                 pathSeeds.Add(getPathSeedLongCorridor());
                 break;
+
             case PathSeedChoice.ZigZag:
                 pathSeeds.Add(getPathSeedZigzag());
                 break;
@@ -219,15 +220,19 @@ public class SimulationManager : MonoBehaviour {
             case PathSeedChoice.Office:
                 pathSeeds.Add(getPathSeedOfficeBuilding());
                 break;
+
             case PathSeedChoice.ExplorationSmall:
                 pathSeeds.Add(getPathSeedExplorationSmall());
                 break;
+
             case PathSeedChoice.ExplorationLarge:
                 pathSeeds.Add(getPathSeedExplorationLarge());
                 break;
+
             case PathSeedChoice.LongWalk:
                 pathSeeds.Add(getPathSeedLongCorridor());
                 break;
+
             case PathSeedChoice.ZigZag:
                 pathSeeds.Add(getPathSeedZigzag());
                 break;
@@ -258,15 +263,19 @@ public class SimulationManager : MonoBehaviour {
             case PathSeedChoice.Office:
                 pathSeeds.Add(getPathSeedOfficeBuilding());
                 break;
+
             case PathSeedChoice.ExplorationSmall:
                 pathSeeds.Add(getPathSeedExplorationSmall());
                 break;
+
             case PathSeedChoice.ExplorationLarge:
                 pathSeeds.Add(getPathSeedExplorationLarge());
                 break;
+
             case PathSeedChoice.LongWalk:
                 pathSeeds.Add(getPathSeedLongCorridor());
                 break;
+
             case PathSeedChoice.ZigZag:
                 pathSeeds.Add(getPathSeedZigzag());
                 break;
@@ -303,12 +312,15 @@ public class SimulationManager : MonoBehaviour {
             case PathSeedChoice.Office:
                 pathSeeds.Add(getPathSeedOfficeBuilding());
                 break;
+
             case PathSeedChoice.ExplorationSmall:
                 pathSeeds.Add(getPathSeedExplorationSmall());
                 break;
+
             case PathSeedChoice.ExplorationLarge:
                 pathSeeds.Add(getPathSeedExplorationLarge());
                 break;
+
             case PathSeedChoice.LongWalk:
                 pathSeeds.Add(getPathSeedLongCorridor());
                 break;
@@ -372,10 +384,10 @@ public class SimulationManager : MonoBehaviour {
 
         // Setup Trail Drawing
         redirectionManager.trailDrawer.enabled = !runAtFullSpeed;
-        
+
         // Enable User Rendering
         SetUserBodyVisibility(true);
-        
+
         // Enable Waypoint
         redirectionManager.targetWaypoint.gameObject.SetActive(true);
 
@@ -390,11 +402,11 @@ public class SimulationManager : MonoBehaviour {
 
         // Set up Tracking Area Dimensions
         redirectionManager.UpdateTrackedSpaceDimensions(setup.trackingSizeShape.x, setup.trackingSizeShape.z);
-        
+
         // Adjust Top View Camera Size
         AdjustCameraSizes();
         AdjustTrailWidth();
-        
+
         // Adjust Screenshot Generator Dimensions
         AdjustSnapshotGeneratorDimensions();
 
@@ -533,14 +545,14 @@ public class SimulationManager : MonoBehaviour {
         waypoint.GetComponent<Renderer>().material.color = new Color(0, 1, 0);
         waypoint.GetComponent<Renderer>().material.SetColor("_EmissionColor", new Color(0, 0.12f, 0));
     }
-    
+
     public void Initialize()
     {
         redirectionManager.runInTestMode = runInSimulationMode;
         userIsWalking = !(redirectionManager.MOVEMENT_CONTROLLER == RedirectionManager.MovementController.AutoPilot);
         if (redirectionManager.MOVEMENT_CONTROLLER == RedirectionManager.MovementController.AutoPilot)
             DISTANCE_TO_WAYPOINT_THRESHOLD = 0.05f;// 0.0001f;
-        
+
         if (redirectionManager.MOVEMENT_CONTROLLER != RedirectionManager.MovementController.Tracker)
         {
             InstantiateSimulationPrefab();
@@ -567,7 +579,7 @@ public class SimulationManager : MonoBehaviour {
         Random.seed = VirtualPathGenerator.RANDOM_SEED;
 
         // Make sure VSync doesn't slow us down
-        
+
         //Debug.Log("Application.targetFrameRate: " + Application.targetFrameRate);
 
         if (runAtFullSpeed && this.enabled)
@@ -596,7 +608,7 @@ public class SimulationManager : MonoBehaviour {
         //algorithms.Add(AlgorithmChoice.None);
         algorithms.Add(AlgorithmChoice.S2C);
         //algorithms.Add(AlgorithmChoice.S2O);
-        
+
         //pathSeeds.Add(new SimulationPathGenerator.PathSeed(new SimulationPathGenerator.SamplingDistribution(SimulationPathGenerator.DistributionType.Uniform, false, 100, 100), new SimulationPathGenerator.SamplingDistribution(SimulationPathGenerator.DistributionType.Uniform, true, 0, 0), 1));
         pathSeeds.Add(new SimulationPathGenerator.PathSeed(new SimulationPathGenerator.SamplingDistribution(SimulationPathGenerator.DistributionType.Uniform, false, 1000, 1000), new SimulationPathGenerator.SamplingDistribution(SimulationPathGenerator.DistributionType.Uniform, true, 0, 0), 1));
 
@@ -634,7 +646,6 @@ public class SimulationManager : MonoBehaviour {
         //commandLineRunCode = "242";
         //commandLineRunCode = "244";
 
-        
         if (redirectionManager.runInTestMode)
         {
             //print("EXP SETUP");
@@ -643,7 +654,6 @@ public class SimulationManager : MonoBehaviour {
             //int algoCode = int.Parse(commandLineRunCode.Substring(2, 1));
             //int resetCode = int.Parse(commandLineRunCode.Substring(3, 1));
 
-            
             System.Type redirectorType = null;
             System.Type resetterType = null;
             switch (condAlgorithm)
@@ -651,30 +661,34 @@ public class SimulationManager : MonoBehaviour {
                 case AlgorithmChoice.None:
                     redirectorType = typeof(NullRedirector);
                     break;
+
                 case AlgorithmChoice.S2C:
                     redirectorType = typeof(S2CRedirector);
                     break;
+
                 case AlgorithmChoice.S2O:
                     redirectorType = typeof(S2ORedirector);
                     break;
+
                 case AlgorithmChoice.Zigzag:
                     redirectorType = typeof(ZigZagRedirector);
                     break;
-                //case 4:
-                //    algorithmChoice = AlgorithmChoice.CenterBasedTransGainSpeedUp;
-                //    break;
-                //case 5:
-                //    algorithmChoice = AlgorithmChoice.S2C_CenterBasedTransGainSpeedUp;
-                //    break;
-                //case 6:
-                //    algorithmChoice = AlgorithmChoice.S2O_CenterBasedTransGainSpeedUp;
-                //    break;
+                    //case 4:
+                    //    algorithmChoice = AlgorithmChoice.CenterBasedTransGainSpeedUp;
+                    //    break;
+                    //case 5:
+                    //    algorithmChoice = AlgorithmChoice.S2C_CenterBasedTransGainSpeedUp;
+                    //    break;
+                    //case 6:
+                    //    algorithmChoice = AlgorithmChoice.S2O_CenterBasedTransGainSpeedUp;
+                    //    break;
             }
             switch (condReset)
             {
                 case ResetChoice.None:
                     resetterType = typeof(NullResetter);
                     break;
+
                 case ResetChoice.TwoOneTurn:
                     resetterType = typeof(TwoOneTurnResetter);
                     break;
@@ -707,17 +721,18 @@ public class SimulationManager : MonoBehaviour {
                 case ExperimentChoice.FixedTrackedSpace:
                     setUpExperimentFixedTrackingArea(condPath, redirectorType, resetterType);
                     break;
+
                 case ExperimentChoice.VaryingSizes:
                     setUpExperimentTrackingAreaSizePerformance(condPath, redirectorType, resetterType);
                     break;
+
                 case ExperimentChoice.VaryingShapes:
                     setUpExperimentTrackingAreaShape(condPath, redirectorType, resetterType);
                     break;
-                //case 3:
-                //    setUpExperimentGainFactors(pathSeedChoice, redirectors, resetters);
-                //    break;
+                    //case 3:
+                    //    setUpExperimentGainFactors(pathSeedChoice, redirectors, resetters);
+                    //    break;
             }
-
         }
 
         //setUpExperimentTrackingAreaSizePerformance(PathSeedChoice.Office, AlgorithmChoice.None);
@@ -748,8 +763,6 @@ public class SimulationManager : MonoBehaviour {
         //setUpExperimentTrackingAreaSizePerformance(PathSeedChoice.LongWalk, AlgorithmChoice.S2C_CenterBasedTransGainSpeedUp);
         //setUpExperimentTrackingAreaSizePerformance(PathSeedChoice.LongWalk, AlgorithmChoice.S2O_CenterBasedTransGainSpeedUp);
 
-
-
         //setUpExperimentTrackingAreaShape(PathSeedChoice.Office, AlgorithmChoice.None);
         //setUpExperimentTrackingAreaShape(PathSeedChoice.Office, AlgorithmChoice.S2C);
         //setUpExperimentTrackingAreaShape(PathSeedChoice.Office, AlgorithmChoice.S2O);
@@ -777,8 +790,6 @@ public class SimulationManager : MonoBehaviour {
         //setUpExperimentTrackingAreaShape(PathSeedChoice.LongWalk, AlgorithmChoice.CenterBasedTransGainSpeedUp);
         //setUpExperimentTrackingAreaShape(PathSeedChoice.LongWalk, AlgorithmChoice.S2C_CenterBasedTransGainSpeedUp);
         //setUpExperimentTrackingAreaShape(PathSeedChoice.LongWalk, AlgorithmChoice.S2O_CenterBasedTransGainSpeedUp);
-
-
 
         //setUpExperimentGainFactors(PathSeedChoice.Office, AlgorithmChoice.None);
         //setUpExperimentGainFactors(PathSeedChoice.Office, AlgorithmChoice.S2C);
@@ -808,19 +819,18 @@ public class SimulationManager : MonoBehaviour {
         //setUpExperimentGainFactors(PathSeedChoice.LongWalk, AlgorithmChoice.S2C_CenterBasedTransGainSpeedUp);
         //setUpExperimentGainFactors(PathSeedChoice.LongWalk, AlgorithmChoice.S2O_CenterBasedTransGainSpeedUp);
 
-
         GenerateAllExperimentSetups();
-        
+
         // Determine Initial Configurations If Random
         determineInitialConfigurations(ref experimentSetups);
     }
-	
+
     // Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
+    void Start()
+    {
+    }
+
+    // Update is called once per frame
     void Update()
     {
         if (redirectionManager.MOVEMENT_CONTROLLER == RedirectionManager.MovementController.Tracker)
@@ -870,7 +880,6 @@ public class SimulationManager : MonoBehaviour {
             //Debug.Log("User At: " + redirectionManager.userHeadTransform.position.ToString("f4"));
             framesInExperiment++;
         }
-
     }
     void OnGUI()
     {
@@ -878,7 +887,6 @@ public class SimulationManager : MonoBehaviour {
         if (experimentComplete)
             GUI.Box(new Rect((int)(0.5f * Screen.width) - 75, (int)(0.5f * Screen.height) - 14, 150, 28), "Experiment Complete");
     }
-
 
     Dictionary<string, string> getExperimentDescriptor(ExperimentSetup setup)
     {

@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using Redirection;
-public class RedirectionManager : MonoBehaviour {
-
+public class RedirectionManager : MonoBehaviour
+{
     public enum MovementController { Keyboard, AutoPilot, Tracker };
 
     [Tooltip("Select if you wish to run simulation from commandline in Unity batchmode.")]
@@ -10,19 +10,19 @@ public class RedirectionManager : MonoBehaviour {
 
     [Tooltip("How user movement is controlled.")]
     public MovementController MOVEMENT_CONTROLLER = MovementController.Tracker;
-    
+
     [Tooltip("Maximum translation gain applied")]
     [Range(0, 5)]
     public float MAX_TRANS_GAIN = 0.26F;
-    
+
     [Tooltip("Minimum translation gain applied")]
     [Range(-0.99F, 0)]
     public float MIN_TRANS_GAIN = -0.14F;
-    
+
     [Tooltip("Maximum rotation gain applied")]
     [Range(0, 5)]
     public float MAX_ROT_GAIN = 0.49F;
-    
+
     [Tooltip("Minimum rotation gain applied")]
     [Range(-0.99F, 0)]
     public float MIN_ROT_GAIN = -0.2F;
@@ -82,7 +82,6 @@ public class RedirectionManager : MonoBehaviour {
     [HideInInspector]
     public Transform targetWaypoint;
 
-
     [HideInInspector]
     public bool inReset = false;
 
@@ -107,7 +106,7 @@ public class RedirectionManager : MonoBehaviour {
         GetResetter();
         GetResetTrigger();
         GetTrailDrawer();
-        
+
         GetSimulatedWalker();
         GetKeyboardController();
         GetSnapshotGenerator();
@@ -118,7 +117,7 @@ public class RedirectionManager : MonoBehaviour {
         SetReferenceForResetTrigger();
         SetBodyReferenceForResetTrigger();
         SetReferenceForTrailDrawer();
-        
+
         SetReferenceForSimulatedWalker();
         SetReferenceForKeyboardController();
         SetReferenceForSnapshotGenerator();
@@ -139,19 +138,22 @@ public class RedirectionManager : MonoBehaviour {
         {
             headTransform = simulatedHead;
         }
-
     }
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
         simulatedTime = 0;
         UpdatePreviousUserState();
-	}
-	
-	// Update is called once per frame
-	void Update () {
 
-	}
+        if (useManualTime)
+            Application.targetFrameRate = (int)targetFPS;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+    }
 
     void LateUpdate()
     {
@@ -355,22 +357,22 @@ public class RedirectionManager : MonoBehaviour {
 
     void GetBody()
     {
-        body = transform.FindChild("Body");
+        body = transform.Find("Body");
     }
 
     void GetTrackedSpace()
     {
-        trackedSpace = transform.FindChild("Tracked Space");
+        trackedSpace = transform.Find("Tracked Space");
     }
 
     void GetSimulatedHead()
     {
-        simulatedHead = transform.FindChild("Simulated User").FindChild("Head");
+        simulatedHead = transform.Find("Simulated User").Find("Head");
     }
 
     void GetTargetWaypoint()
     {
-        targetWaypoint = transform.FindChild("Target Waypoint").gameObject.transform;
+        targetWaypoint = transform.Find("Target Waypoint").gameObject.transform;
     }
 
     void UpdateCurrentUserState()
@@ -428,7 +430,7 @@ public class RedirectionManager : MonoBehaviour {
     public void UpdateRedirector(System.Type redirectorType)
     {
         RemoveRedirector();
-        this.redirector = (Redirector) this.gameObject.AddComponent(redirectorType);
+        this.redirector = (Redirector)this.gameObject.AddComponent(redirectorType);
         //this.redirector = this.gameObject.GetComponent<Redirector>();
         SetReferenceForRedirector();
     }
@@ -446,7 +448,7 @@ public class RedirectionManager : MonoBehaviour {
         RemoveResetter();
         if (resetterType != null)
         {
-            this.resetter = (Resetter) this.gameObject.AddComponent(resetterType);
+            this.resetter = (Resetter)this.gameObject.AddComponent(resetterType);
             //this.resetter = this.gameObject.GetComponent<Resetter>();
             SetReferenceForResetter();
             if (this.resetter != null)
