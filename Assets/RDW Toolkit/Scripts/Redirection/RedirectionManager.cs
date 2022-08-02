@@ -39,10 +39,7 @@ public class RedirectionManager : MonoBehaviour
 
     [Tooltip("Target simulated framerate in auto-pilot mode")]
     public float targetFPS = 60;
-    
-    
 
-    
     [HideInInspector]
     public Transform body;
     [HideInInspector]
@@ -130,10 +127,6 @@ public class RedirectionManager : MonoBehaviour
         if (resetter != null)
             resetter.Initialize();
 
-        if (runInTestMode)
-        {
-            MOVEMENT_CONTROLLER = MovementController.AutoPilot;
-        }
         if (MOVEMENT_CONTROLLER != MovementController.Tracker)
         {
             headTransform = simulatedHead;

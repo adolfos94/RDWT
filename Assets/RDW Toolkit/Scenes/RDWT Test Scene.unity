@@ -196,7 +196,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11417688, guid: 5edd4813c2b91c744b86f9b5db962f68, type: 3}
       propertyPath: targetFPS
-      value: 30
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 11417688, guid: 5edd4813c2b91c744b86f9b5db962f68, type: 3}
       propertyPath: useManualTime
@@ -204,7 +204,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 11417688, guid: 5edd4813c2b91c744b86f9b5db962f68, type: 3}
       propertyPath: MOVEMENT_CONTROLLER
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 11481868, guid: 5edd4813c2b91c744b86f9b5db962f68, type: 3}
       propertyPath: condPath
