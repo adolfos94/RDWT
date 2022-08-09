@@ -2,8 +2,8 @@
 using System.Collections;
 using Redirection;
 
-public class SimulatedWalker : MonoBehaviour {
-
+public class SimulatedWalker : MonoBehaviour
+{
     [HideInInspector]
     public RedirectionManager redirectionManager;
 
@@ -19,21 +19,22 @@ public class SimulatedWalker : MonoBehaviour {
     [SerializeField, Range(0.01f, 360)]
     public float rotationSpeed = 90;
 
+    private const float MINIMUM_DISTANCE_TO_WAYPOINT_FOR_ROTATION = 0.0001f;
+    private const float ROTATIONAL_ERROR_ACCEPTED_IN_DEGRESS = 1;//0.2f; // If user's angular deviation from target is more than this value, we won't move (until we face the target better) - If you go low sometimes it can stop close to target
+    private const float EXTRA_WALK_TO_ENSURE_RESET = 0.01f;
 
+    // Use this for initialization
+    private void Start()
+    {
+    }
 
-    const float MINIMUM_DISTANCE_TO_WAYPOINT_FOR_ROTATION = 0.0001f;
-    const float ROTATIONAL_ERROR_ACCEPTED_IN_DEGRESS = 1;//0.2f; // If user's angular deviation from target is more than this value, we won't move (until we face the target better) - If you go low sometimes it can stop close to target
-    const float EXTRA_WALK_TO_ENSURE_RESET = 0.01f;
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	//public void WalkUpdate () {
+    // Update is called once per frame
+    //public void WalkUpdate () {
     public void Update()
     {
+        if (redirectionManager is null)
+            return;
+
         if (redirectionManager.simulationManager.userIsWalking && redirectionManager.MOVEMENT_CONTROLLER == RedirectionManager.MovementController.AutoPilot)
         {
             if (!redirectionManager.inReset)
@@ -41,7 +42,7 @@ public class SimulatedWalker : MonoBehaviour {
             else
                 redirectionManager.resetter.SimulatedWalkerUpdate();
         }
-	}
+    }
 
     public void TurnAndWalkToWaypoint()
     {
@@ -53,7 +54,7 @@ public class SimulatedWalker : MonoBehaviour {
         GetDistanceAndRotationToWaypoint(out rotationToTargetInDegrees, out userToTargetVectorFlat);
         WalkIfPossible(rotationToTargetInDegrees, userToTargetVectorFlat);
     }
-     
+
     public void RotateIfNecessary(float rotationToTargetInDegrees, Vector3 userToTargetVectorFlat)
     {
         // Handle Rotation To Waypoint
@@ -72,8 +73,6 @@ public class SimulatedWalker : MonoBehaviour {
     {
         transform.Rotate(Vector3.up, redirectionManager.GetDeltaTime() * rotationSpeed, Space.World);
     }
-
-    
 
     public void WalkIfPossible(float rotationToTargetInDegrees, Vector3 userToTargetVectorFlat)
     {
@@ -99,10 +98,9 @@ public class SimulatedWalker : MonoBehaviour {
         }
     }
 
-    void GetDistanceAndRotationToWaypoint(out float rotationToTargetInDegrees, out Vector3 userToTargetVectorFlat)
+    private void GetDistanceAndRotationToWaypoint(out float rotationToTargetInDegrees, out Vector3 userToTargetVectorFlat)
     {
         userToTargetVectorFlat = Utilities.FlattenedPos3D(redirectionManager.targetWaypoint.position - redirectionManager.currPos);
         rotationToTargetInDegrees = Utilities.GetSignedAngle(Utilities.FlattenedDir3D(redirectionManager.currDir), userToTargetVectorFlat);
     }
-
 }

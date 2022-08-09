@@ -7,8 +7,6 @@ public abstract class Redirector : MonoBehaviour
     [HideInInspector]
     public RedirectionManager redirectionManager;
 
-    
-      
     /// <summary>
     /// Applies redirection based on the algorithm.
     /// </summary>
@@ -24,10 +22,9 @@ public abstract class Redirector : MonoBehaviour
         {
             this.transform.RotateAround(Utilities.FlattenedPos3D(redirectionManager.headTransform.position), Vector3.up, rotationInDegrees);
             this.GetComponentInChildren<KeyboardController>().SetLastRotation(rotationInDegrees);
-            redirectionManager.statisticsLogger.Event_Rotation_Gain(rotationInDegrees / redirectionManager.deltaDir, rotationInDegrees);
+            //redirectionManager.statisticsLogger.Event_Rotation_Gain(rotationInDegrees / redirectionManager.deltaDir, rotationInDegrees);
         }
     }
-
 
     /// <summary>
     /// Applies curvature to Redirected User. The neat thing about calling it this way is that we can keep track of gains applied.
@@ -39,7 +36,7 @@ public abstract class Redirector : MonoBehaviour
         {
             this.transform.RotateAround(Utilities.FlattenedPos3D(redirectionManager.headTransform.position), Vector3.up, rotationInDegrees);
             this.GetComponentInChildren<KeyboardController>().SetLastCurvature(rotationInDegrees);
-            redirectionManager.statisticsLogger.Event_Curvature_Gain(rotationInDegrees / redirectionManager.deltaPos.magnitude, rotationInDegrees);
+            // redirectionManager.statisticsLogger.Event_Curvature_Gain(rotationInDegrees / redirectionManager.deltaPos.magnitude, rotationInDegrees);
         }
     }
 
@@ -53,12 +50,7 @@ public abstract class Redirector : MonoBehaviour
         {
             this.transform.Translate(translation, Space.World);
             this.GetComponentInChildren<KeyboardController>().SetLastTranslation(translation);
-            redirectionManager.statisticsLogger.Event_Translation_Gain(Mathf.Sign(Vector3.Dot(translation, redirectionManager.deltaPos)) * translation.magnitude / redirectionManager.deltaPos.magnitude, Utilities.FlattenedPos2D(translation));
-            if (double.IsNaN(Mathf.Sign(Vector3.Dot(translation, redirectionManager.deltaPos)) * translation.magnitude / redirectionManager.deltaPos.magnitude))
-                print("wtf");
+            //redirectionManager.statisticsLogger.Event_Translation_Gain(Mathf.Sign(Vector3.Dot(translation, redirectionManager.deltaPos)) * translation.magnitude / redirectionManager.deltaPos.magnitude, Utilities.FlattenedPos2D(translation));
         }
     }
-
-
-    
 }

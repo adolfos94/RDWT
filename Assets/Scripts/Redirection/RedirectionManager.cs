@@ -1,12 +1,11 @@
 using UnityEngine;
 using System.Collections;
 using Redirection;
+
 public class RedirectionManager : MonoBehaviour
 {
-    public enum MovementController { Keyboard, AutoPilot, Tracker };
-
-    [Tooltip("Select if you wish to run simulation from commandline in Unity batchmode.")]
-    public bool runInTestMode = false;
+    public enum MovementController
+    { Keyboard, AutoPilot, Tracker };
 
     [Tooltip("How user movement is controlled.")]
     public MovementController MOVEMENT_CONTROLLER = MovementController.Tracker;
@@ -40,44 +39,62 @@ public class RedirectionManager : MonoBehaviour
     [Tooltip("Target simulated framerate in auto-pilot mode")]
     public float targetFPS = 60;
 
-    [HideInInspector]
+    //[HideInInspector]
     public Transform body;
-    [HideInInspector]
+
+    //[HideInInspector]
     public Transform trackedSpace;
-    [HideInInspector]
+
+    //[HideInInspector]
     public Transform simulatedHead;
 
     [HideInInspector]
     public Redirector redirector;
+
     [HideInInspector]
     public Resetter resetter;
+
     [HideInInspector]
     public ResetTrigger resetTrigger;
+
     [HideInInspector]
     public TrailDrawer trailDrawer;
+
     [HideInInspector]
     public SimulationManager simulationManager;
+
     [HideInInspector]
     public SimulatedWalker simulatedWalker;
+
     [HideInInspector]
     public KeyboardController keyboardController;
+
     [HideInInspector]
     public SnapshotGenerator snapshotGenerator;
+
     [HideInInspector]
     public StatisticsLogger statisticsLogger;
+
     [HideInInspector]
     public HeadFollower bodyHeadFollower;
 
     [HideInInspector]
     public Vector3 currPos, currPosReal, prevPos, prevPosReal;
+
     [HideInInspector]
     public Vector3 currDir, currDirReal, prevDir, prevDirReal;
+
     [HideInInspector]
     public Vector3 deltaPos;
+
     [HideInInspector]
     public float deltaDir;
+
     [HideInInspector]
     public Transform targetWaypoint;
+
+    [HideInInspector]
+    public bool runInTestMode = false;
 
     [HideInInspector]
     public bool inReset = false;
@@ -87,7 +104,7 @@ public class RedirectionManager : MonoBehaviour
 
     private float simulatedTime = 0;
 
-    void Awake()
+    private void Awake()
     {
         startTimeOfProgram = System.DateTime.Now.ToString("yyyy MM dd HH:mm:ss");
 
@@ -104,10 +121,10 @@ public class RedirectionManager : MonoBehaviour
         GetResetTrigger();
         GetTrailDrawer();
 
-        GetSimulatedWalker();
+        //GetSimulatedWalker();
         GetKeyboardController();
-        GetSnapshotGenerator();
-        GetStatisticsLogger();
+        //GetSnapshotGenerator();
+        //GetStatisticsLogger();
         GetBodyHeadFollower();
         SetReferenceForRedirector();
         SetReferenceForResetter();
@@ -115,10 +132,10 @@ public class RedirectionManager : MonoBehaviour
         SetBodyReferenceForResetTrigger();
         SetReferenceForTrailDrawer();
 
-        SetReferenceForSimulatedWalker();
+        //SetReferenceForSimulatedWalker();
         SetReferenceForKeyboardController();
-        SetReferenceForSnapshotGenerator();
-        SetReferenceForStatisticsLogger();
+        //SetReferenceForSnapshotGenerator();
+        //SetReferenceForStatisticsLogger();
         SetReferenceForBodyHeadFollower();
 
         // The rule is to have RedirectionManager call all "Awake"-like functions that rely on RedirectionManager as an "Initialize" call.
@@ -134,7 +151,7 @@ public class RedirectionManager : MonoBehaviour
     }
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         simulatedTime = 0;
         UpdatePreviousUserState();
@@ -144,11 +161,11 @@ public class RedirectionManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         simulatedTime += 1.0f / targetFPS;
 
@@ -180,7 +197,7 @@ public class RedirectionManager : MonoBehaviour
             }
         }
 
-        statisticsLogger.UpdateStats();
+        //statisticsLogger.UpdateStats();
 
         UpdatePreviousUserState();
 
@@ -203,31 +220,31 @@ public class RedirectionManager : MonoBehaviour
             return Time.time;
     }
 
-    void UpdateBodyPose()
+    private void UpdateBodyPose()
     {
         body.position = Utilities.FlattenedPos3D(headTransform.position);
         body.rotation = Quaternion.LookRotation(Utilities.FlattenedDir3D(headTransform.forward), Vector3.up);
     }
 
-    void SetReferenceForRedirector()
+    private void SetReferenceForRedirector()
     {
         if (redirector != null)
             redirector.redirectionManager = this;
     }
 
-    void SetReferenceForResetter()
+    private void SetReferenceForResetter()
     {
         if (resetter != null)
             resetter.redirectionManager = this;
     }
 
-    void SetReferenceForResetTrigger()
+    private void SetReferenceForResetTrigger()
     {
         if (resetTrigger != null)
             resetTrigger.redirectionManager = this;
     }
 
-    void SetBodyReferenceForResetTrigger()
+    private void SetBodyReferenceForResetTrigger()
     {
         if (resetTrigger != null && body != null)
         {
@@ -236,7 +253,7 @@ public class RedirectionManager : MonoBehaviour
         }
     }
 
-    void SetReferenceForTrailDrawer()
+    private void SetReferenceForTrailDrawer()
     {
         if (trailDrawer != null)
         {
@@ -244,7 +261,7 @@ public class RedirectionManager : MonoBehaviour
         }
     }
 
-    void SetReferenceForSimulationManager()
+    private void SetReferenceForSimulationManager()
     {
         if (simulationManager != null)
         {
@@ -252,7 +269,7 @@ public class RedirectionManager : MonoBehaviour
         }
     }
 
-    void SetReferenceForSimulatedWalker()
+    private void SetReferenceForSimulatedWalker()
     {
         if (simulatedWalker != null)
         {
@@ -260,7 +277,7 @@ public class RedirectionManager : MonoBehaviour
         }
     }
 
-    void SetReferenceForKeyboardController()
+    private void SetReferenceForKeyboardController()
     {
         if (keyboardController != null)
         {
@@ -268,7 +285,7 @@ public class RedirectionManager : MonoBehaviour
         }
     }
 
-    void SetReferenceForSnapshotGenerator()
+    private void SetReferenceForSnapshotGenerator()
     {
         if (snapshotGenerator != null)
         {
@@ -276,7 +293,7 @@ public class RedirectionManager : MonoBehaviour
         }
     }
 
-    void SetReferenceForStatisticsLogger()
+    private void SetReferenceForStatisticsLogger()
     {
         if (statisticsLogger != null)
         {
@@ -284,7 +301,7 @@ public class RedirectionManager : MonoBehaviour
         }
     }
 
-    void SetReferenceForBodyHeadFollower()
+    private void SetReferenceForBodyHeadFollower()
     {
         if (bodyHeadFollower != null)
         {
@@ -292,7 +309,7 @@ public class RedirectionManager : MonoBehaviour
         }
     }
 
-    void GetRedirector()
+    private void GetRedirector()
     {
         redirector = this.gameObject.GetComponent<Redirector>();
         if (redirector == null)
@@ -300,7 +317,7 @@ public class RedirectionManager : MonoBehaviour
         redirector = this.gameObject.GetComponent<Redirector>();
     }
 
-    void GetResetter()
+    private void GetResetter()
     {
         resetter = this.gameObject.GetComponent<Resetter>();
         if (resetter == null)
@@ -308,67 +325,67 @@ public class RedirectionManager : MonoBehaviour
         resetter = this.gameObject.GetComponent<Resetter>();
     }
 
-    void GetResetTrigger()
+    private void GetResetTrigger()
     {
         resetTrigger = this.gameObject.GetComponentInChildren<ResetTrigger>();
     }
 
-    void GetTrailDrawer()
+    private void GetTrailDrawer()
     {
         trailDrawer = this.gameObject.GetComponent<TrailDrawer>();
     }
 
-    void GetSimulationManager()
+    private void GetSimulationManager()
     {
         simulationManager = this.gameObject.GetComponent<SimulationManager>();
     }
 
-    void GetSimulatedWalker()
+    private void GetSimulatedWalker()
     {
         simulatedWalker = simulatedHead.GetComponent<SimulatedWalker>();
     }
 
-    void GetKeyboardController()
+    private void GetKeyboardController()
     {
         keyboardController = simulatedHead.GetComponent<KeyboardController>();
     }
 
-    void GetSnapshotGenerator()
+    private void GetSnapshotGenerator()
     {
         snapshotGenerator = this.gameObject.GetComponent<SnapshotGenerator>();
     }
 
-    void GetStatisticsLogger()
+    private void GetStatisticsLogger()
     {
         statisticsLogger = this.gameObject.GetComponent<StatisticsLogger>();
     }
 
-    void GetBodyHeadFollower()
+    private void GetBodyHeadFollower()
     {
         bodyHeadFollower = body.GetComponent<HeadFollower>();
     }
 
-    void GetBody()
+    private void GetBody()
     {
         body = transform.Find("Body");
     }
 
-    void GetTrackedSpace()
+    private void GetTrackedSpace()
     {
         trackedSpace = transform.Find("Tracked Space");
     }
 
-    void GetSimulatedHead()
+    private void GetSimulatedHead()
     {
         simulatedHead = transform.Find("Simulated User").Find("Head");
     }
 
-    void GetTargetWaypoint()
+    private void GetTargetWaypoint()
     {
         targetWaypoint = transform.Find("Target Waypoint").gameObject.transform;
     }
 
-    void UpdateCurrentUserState()
+    private void UpdateCurrentUserState()
     {
         currPos = Utilities.FlattenedPos3D(headTransform.position);
         currPosReal = Utilities.GetRelativePosition(currPos, this.transform);
@@ -376,7 +393,7 @@ public class RedirectionManager : MonoBehaviour
         currDirReal = Utilities.FlattenedDir3D(Utilities.GetRelativeDirection(currDir, this.transform));
     }
 
-    void UpdatePreviousUserState()
+    private void UpdatePreviousUserState()
     {
         prevPos = Utilities.FlattenedPos3D(headTransform.position);
         prevPosReal = Utilities.GetRelativePosition(prevPos, this.transform);
@@ -384,7 +401,7 @@ public class RedirectionManager : MonoBehaviour
         prevDirReal = Utilities.FlattenedDir3D(Utilities.GetRelativeDirection(prevDir, this.transform));
     }
 
-    void CalculateStateChanges()
+    private void CalculateStateChanges()
     {
         deltaPos = currPos - prevPos;
         deltaDir = Utilities.GetSignedAngle(prevDir, currDir);
