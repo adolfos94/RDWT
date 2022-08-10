@@ -2,14 +2,15 @@
 using System.Collections;
 using Redirection;
 
-public abstract class Resetter : MonoBehaviour {
-
+public abstract class Resetter : MonoBehaviour
+{
     [HideInInspector]
     public RedirectionManager redirectionManager;
 
-    enum Boundary { Top, Bottom, Right, Left };
+    private enum Boundary
+    { Top, Bottom, Right, Left };
 
-    float maxX, maxZ;
+    private float maxX, maxZ;
 
     /// <summary>
     /// Function called when reset trigger is signaled, to see if resetter believes resetting is necessary.
@@ -25,13 +26,11 @@ public abstract class Resetter : MonoBehaviour {
 
     public abstract void SimulatedWalkerUpdate();
 
-
-
     public void InjectRotation(float rotationInDegrees)
     {
         this.transform.RotateAround(Utilities.FlattenedPos3D(redirectionManager.headTransform.position), Vector3.up, rotationInDegrees);
         this.GetComponentInChildren<KeyboardController>().SetLastRotation(rotationInDegrees);
-        redirectionManager.statisticsLogger.Event_Rotation_Gain_Reorientation(rotationInDegrees / redirectionManager.deltaDir, rotationInDegrees);
+        //redirectionManager.statisticsLogger.Event_Rotation_Gain_Reorientation(rotationInDegrees / redirectionManager.deltaDir, rotationInDegrees);
     }
 
     public void Initialize()
@@ -46,8 +45,7 @@ public abstract class Resetter : MonoBehaviour {
         return Mathf.Abs(redirectionManager.currPosReal.x) >= maxX || Mathf.Abs(redirectionManager.currPosReal.z) >= maxZ;
     }
 
-
-    Boundary getNearestBoundary()
+    private Boundary getNearestBoundary()
     {
         Vector3 position = redirectionManager.currPosReal;
         if (position.x >= 0 && Mathf.Abs(maxX - position.x) <= Mathf.Min(Mathf.Abs(maxZ - position.z), Mathf.Abs(-maxZ - position.z))) // for a very wide rectangle, you can find that the first condition is actually necessary
@@ -59,24 +57,27 @@ public abstract class Resetter : MonoBehaviour {
         return Boundary.Bottom;
     }
 
-    Vector3 getAwayFromNearestBoundaryDirection()
+    private Vector3 getAwayFromNearestBoundaryDirection()
     {
         Boundary nearestBoundary = getNearestBoundary();
         switch (nearestBoundary)
         {
             case Boundary.Top:
                 return -Vector3.forward;
+
             case Boundary.Bottom:
                 return Vector3.forward;
+
             case Boundary.Right:
                 return -Vector3.right;
+
             case Boundary.Left:
                 return Vector3.right;
         }
         return Vector3.zero;
     }
 
-    float getUserAngleWithNearestBoundary() // Away from Wall is considered Zero
+    private float getUserAngleWithNearestBoundary() // Away from Wall is considered Zero
     {
         return Utilities.GetSignedAngle(redirectionManager.currDirReal, getAwayFromNearestBoundaryDirection());
     }
@@ -104,10 +105,13 @@ public abstract class Resetter : MonoBehaviour {
         {
             case Boundary.Top:
                 return Mathf.Abs(maxZ - position.z);
+
             case Boundary.Bottom:
                 return Mathf.Abs(-maxZ - position.z);
+
             case Boundary.Right:
                 return Mathf.Abs(maxX - position.x);
+
             case Boundary.Left:
                 return Mathf.Abs(-maxX - position.x);
         }
@@ -124,5 +128,4 @@ public abstract class Resetter : MonoBehaviour {
         //print("MaxZ: " + maxZ);
         return Mathf.Min(tMaxX, tMaxZ);
     }
-
 }
