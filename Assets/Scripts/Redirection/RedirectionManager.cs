@@ -39,10 +39,8 @@ public class RedirectionManager : MonoBehaviour
     [Tooltip("Target simulated framerate in auto-pilot mode")]
     public float targetFPS = 60;
 
-    [HideInInspector]
     public Transform body;
 
-    [HideInInspector]
     public Transform trackedSpace;
 
     [HideInInspector]
