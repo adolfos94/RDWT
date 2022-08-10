@@ -137,6 +137,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 174204, guid: 5edd4813c2b91c744b86f9b5db962f68, type: 3}
+      propertyPath: m_Name
+      value: ' Redirected Walking Manager'
+      objectReference: {fileID: 0}
+    - target: {fileID: 174204, guid: 5edd4813c2b91c744b86f9b5db962f68, type: 3}
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}

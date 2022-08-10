@@ -40,6 +40,7 @@ public class KeyboardController : MonoBehaviour
         Vector3 userForward = Utilities.FlattenedDir3D(this.transform.forward);
         Vector3 userRight = Utilities.FlattenedDir3D(this.transform.right);
 
+        // translation
         if (Input.GetKey(KeyCode.W))
         {
             this.transform.Translate(translationSpeed * Time.deltaTime * userForward, Space.World);
@@ -57,6 +58,7 @@ public class KeyboardController : MonoBehaviour
             this.transform.Translate(-translationSpeed * Time.deltaTime * userRight, Space.World);
         }
 
+        // rotation
         if (Input.GetKey(KeyCode.UpArrow))
         {
             this.transform.Rotate(userRight, -rotationSpeed * Time.deltaTime, Space.World);

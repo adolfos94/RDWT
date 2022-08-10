@@ -39,13 +39,13 @@ public class RedirectionManager : MonoBehaviour
     [Tooltip("Target simulated framerate in auto-pilot mode")]
     public float targetFPS = 60;
 
-    //[HideInInspector]
+    [HideInInspector]
     public Transform body;
 
-    //[HideInInspector]
+    [HideInInspector]
     public Transform trackedSpace;
 
-    //[HideInInspector]
+    [HideInInspector]
     public Transform simulatedHead;
 
     [HideInInspector]
@@ -108,7 +108,6 @@ public class RedirectionManager : MonoBehaviour
     {
         startTimeOfProgram = System.DateTime.Now.ToString("yyyy MM dd HH:mm:ss");
 
-        GetBody();
         GetTrackedSpace();
         GetSimulatedHead();
 
@@ -121,10 +120,7 @@ public class RedirectionManager : MonoBehaviour
         GetResetTrigger();
         GetTrailDrawer();
 
-        //GetSimulatedWalker();
         GetKeyboardController();
-        //GetSnapshotGenerator();
-        //GetStatisticsLogger();
         GetBodyHeadFollower();
         SetReferenceForRedirector();
         SetReferenceForResetter();
@@ -132,22 +128,16 @@ public class RedirectionManager : MonoBehaviour
         SetBodyReferenceForResetTrigger();
         SetReferenceForTrailDrawer();
 
-        //SetReferenceForSimulatedWalker();
         SetReferenceForKeyboardController();
-        //SetReferenceForSnapshotGenerator();
-        //SetReferenceForStatisticsLogger();
         SetReferenceForBodyHeadFollower();
 
-        // The rule is to have RedirectionManager call all "Awake"-like functions that rely on RedirectionManager as an "Initialize" call.
-        resetTrigger.Initialize();
-        // Resetter needs ResetTrigger to be initialized before initializing itself
+        if (resetTrigger != null)
+            resetTrigger.Initialize();
+
         if (resetter != null)
             resetter.Initialize();
 
-        if (MOVEMENT_CONTROLLER != MovementController.Tracker)
-        {
-            headTransform = simulatedHead;
-        }
+        headTransform = simulatedHead;
     }
 
     // Use this for initialization
@@ -168,9 +158,6 @@ public class RedirectionManager : MonoBehaviour
     private void LateUpdate()
     {
         simulatedTime += 1.0f / targetFPS;
-
-        //if (MOVEMENT_CONTROLLER == MovementController.AutoPilot)
-        //    simulatedWalker.WalkUpdate();
 
         UpdateCurrentUserState();
         CalculateStateChanges();
@@ -197,10 +184,7 @@ public class RedirectionManager : MonoBehaviour
             }
         }
 
-        //statisticsLogger.UpdateStats();
-
         UpdatePreviousUserState();
-
         UpdateBodyPose();
     }
 
@@ -269,35 +253,11 @@ public class RedirectionManager : MonoBehaviour
         }
     }
 
-    private void SetReferenceForSimulatedWalker()
-    {
-        if (simulatedWalker != null)
-        {
-            simulatedWalker.redirectionManager = this;
-        }
-    }
-
     private void SetReferenceForKeyboardController()
     {
         if (keyboardController != null)
         {
             keyboardController.redirectionManager = this;
-        }
-    }
-
-    private void SetReferenceForSnapshotGenerator()
-    {
-        if (snapshotGenerator != null)
-        {
-            snapshotGenerator.redirectionManager = this;
-        }
-    }
-
-    private void SetReferenceForStatisticsLogger()
-    {
-        if (statisticsLogger != null)
-        {
-            statisticsLogger.redirectionManager = this;
         }
     }
 
@@ -340,34 +300,14 @@ public class RedirectionManager : MonoBehaviour
         simulationManager = this.gameObject.GetComponent<SimulationManager>();
     }
 
-    private void GetSimulatedWalker()
-    {
-        simulatedWalker = simulatedHead.GetComponent<SimulatedWalker>();
-    }
-
     private void GetKeyboardController()
     {
         keyboardController = simulatedHead.GetComponent<KeyboardController>();
     }
 
-    private void GetSnapshotGenerator()
-    {
-        snapshotGenerator = this.gameObject.GetComponent<SnapshotGenerator>();
-    }
-
-    private void GetStatisticsLogger()
-    {
-        statisticsLogger = this.gameObject.GetComponent<StatisticsLogger>();
-    }
-
     private void GetBodyHeadFollower()
     {
         bodyHeadFollower = body.GetComponent<HeadFollower>();
-    }
-
-    private void GetBody()
-    {
-        body = transform.Find("Body");
     }
 
     private void GetTrackedSpace()
@@ -378,11 +318,6 @@ public class RedirectionManager : MonoBehaviour
     private void GetSimulatedHead()
     {
         simulatedHead = transform.Find("Simulated User").Find("Head");
-    }
-
-    private void GetTargetWaypoint()
-    {
-        targetWaypoint = transform.Find("Target Waypoint").gameObject.transform;
     }
 
     private void UpdateCurrentUserState()
