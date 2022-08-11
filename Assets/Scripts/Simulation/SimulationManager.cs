@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using Redirection;
@@ -313,54 +313,6 @@ public class SimulationManager : MonoBehaviour
         initialConfigurations.Add(new InitialConfiguration(new Vector2(0, 0), Vector2.one)); // HACK: THIS NON-NORMALIZED ORIENTATION WILL INDICATE DIAGONAL AND WILL BE FIXED LATER
         gainScaleFactors.Add(Vector3.one);
     }
-
-    /*
-    void setUpExperimentGainFactors(PathSeedChoice pathSeedChoice, List<Redirector> redirectors, List<Resetter> resetters)
-    {
-        // Initialize Values
-        this.redirectors = redirectors;
-        this.resetters = resetters;
-        pathSeeds = new List<VirtualPathGenerator.PathSeed>();
-        trackingSizes = new List<TrackingSizeShape>();
-        initialConfigurations = new List<InitialConfiguration>();
-        gainScaleFactors = new List<Vector3>();
-        TRIALS_PER_EXPERIMENT = pathSeedChoice == PathSeedChoice.LongWalk ? 1 : MAX_TRIALS;
-
-        switch (pathSeedChoice)
-        {
-            case PathSeedChoice.Office:
-                pathSeeds.Add(getPathSeedOfficeBuilding());
-                break;
-
-            case PathSeedChoice.ExplorationSmall:
-                pathSeeds.Add(getPathSeedExplorationSmall());
-                break;
-
-            case PathSeedChoice.ExplorationLarge:
-                pathSeeds.Add(getPathSeedExplorationLarge());
-                break;
-
-            case PathSeedChoice.LongWalk:
-                pathSeeds.Add(getPathSeedLongCorridor());
-                break;
-        }
-
-        trackingSizes.Add(new TrackingSizeShape(10, 10));
-
-        initialConfigurations.Add(new InitialConfiguration(new Vector2(0, 0), new Vector2(0, 1)));
-
-        for (float g_t = 0; g_t <= 1.5f; g_t += 0.5f)
-        {
-            for (float g_r = 0; g_r <= 1.5f; g_r += 0.5f)
-            {
-                for (float g_c = 0; g_c <= 1.5f; g_c += 0.5f)
-                {
-                    gainScaleFactors.Add(new Vector3(g_t, g_r, g_c));
-                }
-            }
-        }
-    }
-    */
 
     private void GenerateAllExperimentSetups()
     {

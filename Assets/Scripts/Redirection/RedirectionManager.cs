@@ -2,7 +2,6 @@ using UnityEngine;
 using System.Collections;
 using Redirection;
 
-[RequireComponent(typeof(Redirector), typeof(Resetter), typeof(ResetTrigger))]
 public class RedirectionManager : MonoBehaviour
 {
     public enum MovementController
@@ -218,6 +217,9 @@ public class RedirectionManager : MonoBehaviour
     /// </summary>
     private void GetRedirector()
     {
+        if (redirector == null) /// Set NullRedirector
+            gameObject.AddComponent<NullRedirector>();
+
         redirector = this.gameObject.GetComponent<Redirector>();
         redirector.redirectionManager = this;
     }
@@ -227,6 +229,9 @@ public class RedirectionManager : MonoBehaviour
     /// </summary>
     private void GetResetter()
     {
+        if (resetter == null)
+            gameObject.AddComponent<NullResetter>();
+
         resetter = this.gameObject.GetComponent<Resetter>();
         resetter.redirectionManager = this;
     }
