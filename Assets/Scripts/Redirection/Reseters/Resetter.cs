@@ -35,9 +35,8 @@ public abstract class Resetter : MonoBehaviour
 
     public void Initialize()
     {
-        maxX = 0.5f * (redirectionManager.trackedSpace.localScale.x) - redirectionManager.resetTrigger.RESET_TRIGGER_BUFFER;// redirectionManager.resetTrigger.xLength);// + USER_CAPSULE_COLLIDER_DIAMETER);
+        maxX = 0.5f * (redirectionManager.trackedSpace.localScale.x) - redirectionManager.resetTrigger.RESET_TRIGGER_BUFFER;
         maxZ = 0.5f * (redirectionManager.trackedSpace.localScale.z) - redirectionManager.resetTrigger.RESET_TRIGGER_BUFFER;
-        //print("PRACTICAL MAX X: " + maxX);
     }
 
     public bool IsUserOutOfBounds()

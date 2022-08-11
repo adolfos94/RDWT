@@ -5,18 +5,18 @@ using System.Collections;
 /// This type of reset injects a 180 rotation. It will show a prompt to the user once at the full rotation is applied and the user is roughly looking at the original direction.
 /// The method is simply doubling the rotation amount. No smoothing is applied. No specific rotation is enforced this way.
 /// </summary>
-public class TwoOneTurnResetter : Resetter {
-
+public class TwoOneTurnResetter : Resetter
+{
     ///// <summary>
     ///// The user must return to her original orientation for the reset to let go. Up to this amount of error is allowed.
     ///// </summary>
     //float MAX_ORIENTATION_RETURN_ERROR = 15;
 
-    float overallInjectedRotation;
-    
+    private float overallInjectedRotation;
+
     private Transform prefabHUD = null;
-    
-    Transform instanceHUD;
+
+    private Transform instanceHUD;
 
     public override bool IsResetRequired()
     {
@@ -48,8 +48,6 @@ public class TwoOneTurnResetter : Resetter {
         }
     }
 
-
-
     public override void FinalizeReset()
     {
         Destroy(instanceHUD.gameObject);
@@ -72,5 +70,4 @@ public class TwoOneTurnResetter : Resetter {
         redirectionManager.simulatedWalker.RotateInPlace();
         //print("overallInjectedRotation: " + overallInjectedRotation);
     }
-
 }

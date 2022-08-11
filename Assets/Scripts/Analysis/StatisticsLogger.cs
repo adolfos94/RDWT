@@ -5,8 +5,9 @@ using System.Linq;
 using System.IO;
 using System.Xml;
 using Redirection;
-public class StatisticsLogger : MonoBehaviour {
 
+public class StatisticsLogger : MonoBehaviour
+{
     [HideInInspector]
     public RedirectionManager redirectionManager;
 
@@ -15,6 +16,7 @@ public class StatisticsLogger : MonoBehaviour {
 
     [HideInInspector]
     public List<Dictionary<string, string>> experimentResults = new List<Dictionary<string, string>>();
+
     public float samplingFrequency = 10; // How often we will gather data we have and log it in hertz
     // The way this works is that we wait 1 / samplingFrequency time to transpire before we attempt to clean buffers and gather samples
     // And since we always get a buffer value right before collecting samples, we'll have at least 1 buffer value to get an average from
@@ -25,70 +27,77 @@ public class StatisticsLogger : MonoBehaviour {
     // TEMPORARILY SETTING ALL TO PUBLIC FOR TESTING
 
     // Redirection Single Parameters
-    float sumOfInjectedTranslation = 0; // Overall amount of displacement (IN METERS) of redirection reference due to translation gain (always positive)
-    float sumOfInjectedRotationFromRotationGain = 0; // Overall amount of rotation (IN RADIANS) (around user) of redirection reference due to rotation gain (always positive)
-    float sumOfInjectedRotationFromCurvatureGain = 0; // Overall amount of rotation (IN RADIANS) (around user) of redirection reference due to curvature gain (always positive)
-    float maxTranslationGain = float.MinValue;
-    float minTranslationGain = float.MaxValue;
-    float maxRotationGain = float.MinValue;
-    float minRotationGain = float.MaxValue;
-    float maxCurvatureGain = float.MinValue;
-    float minCurvatureGain = float.MaxValue;
+    private float sumOfInjectedTranslation = 0; // Overall amount of displacement (IN METERS) of redirection reference due to translation gain (always positive)
+
+    private float sumOfInjectedRotationFromRotationGain = 0; // Overall amount of rotation (IN RADIANS) (around user) of redirection reference due to rotation gain (always positive)
+    private float sumOfInjectedRotationFromCurvatureGain = 0; // Overall amount of rotation (IN RADIANS) (around user) of redirection reference due to curvature gain (always positive)
+    private float maxTranslationGain = float.MinValue;
+    private float minTranslationGain = float.MaxValue;
+    private float maxRotationGain = float.MinValue;
+    private float minRotationGain = float.MaxValue;
+    private float maxCurvatureGain = float.MinValue;
+    private float minCurvatureGain = float.MaxValue;
 
     // Reset Single Parameters
-    float resetCount = 0;
-    float sumOfVirtualDistanceTravelled = 0; // Based on user movement controller plus redirection movement
-    float sumOfRealDistanceTravelled = 0; // Based on user movement controller
-    float experimentBeginningTime = 0;
-    float experimentEndingTime = 0;
+    private float resetCount = 0;
+
+    private float sumOfVirtualDistanceTravelled = 0; // Based on user movement controller plus redirection movement
+    private float sumOfRealDistanceTravelled = 0; // Based on user movement controller
+    private float experimentBeginningTime = 0;
+    private float experimentEndingTime = 0;
 
     // Reset Sample Parameters
-    List<float> virtualDistancesTravelledBetweenResets = new List<float>(); // this will be measured also from beginning to first reset, and from last reset to end (?)
-    float virtualDistanceTravelledSinceLastReset;
-    List<float> timeElapsedBetweenResets = new List<float>(); // this will be measured also from beginning to first reset, and from last reset to end (?)
-    float timeOfLastReset = 0;
+    private List<float> virtualDistancesTravelledBetweenResets = new List<float>(); // this will be measured also from beginning to first reset, and from last reset to end (?)
+
+    private float virtualDistanceTravelledSinceLastReset;
+    private List<float> timeElapsedBetweenResets = new List<float>(); // this will be measured also from beginning to first reset, and from last reset to end (?)
+    private float timeOfLastReset = 0;
 
     // Sampling Paramers: These parameters are first read per frame/value update and stored in their buffer, and then 1/samplingFrequency time goes by, the values in the buffer will be averaged and logged to the list
     // The buffer variables for gains will be multiplied by time and at sampling time divided by time since last sample to get a proper average (since the functions aren't guaranteed to be called every frame)
     // Actually we can do this for all parameters just for true weighted average!
-    List<Vector2> userRealPositionSamples = new List<Vector2>();
-    List<Vector2> userRealPositionSamplesBuffer = new List<Vector2>();
-    List<Vector2> userVirtualPositionSamples = new List<Vector2>();
-    List<Vector2> userVirtualPositionSamplesBuffer = new List<Vector2>();
-    List<float> translationGainSamples = new List<float>();
-    List<float> translationGainSamplesBuffer = new List<float>();
-    List<float> injectedTranslationSamples = new List<float>();
-    List<float> injectedTranslationSamplesBuffer = new List<float>();
-    List<float> rotationGainSamples = new List<float>();
-    List<float> rotationGainSamplesBuffer = new List<float>();
-    // NOTE: IN THE FUTURE, WE MIGHT WANT TO LOG THE INJECTED VALUES DIVIDED BY TIME, SO IT'S MORE CONSISTENT AND NO DEPENDENT ON THE FRAMERATE
-    List<float> injectedRotationFromRotationGainSamples = new List<float>();
-    List<float> injectedRotationFromRotationGainSamplesBuffer = new List<float>();
-    List<float> curvatureGainSamples = new List<float>();
-    List<float> curvatureGainSamplesBuffer = new List<float>();
-    List<float> injectedRotationFromCurvatureGainSamples = new List<float>();
-    List<float> injectedRotationFromCurvatureGainSamplesBuffer = new List<float>();
-    List<float> injectedRotationSamples = new List<float>();
-    List<float> injectedRotationSamplesBuffer = new List<float>();
-    List<float> distanceToNearestBoundarySamples = new List<float>();
-    List<float> distanceToNearestBoundarySamplesBuffer = new List<float>();
-    List<float> distanceToCenterSamples = new List<float>();
-    List<float> distanceToCenterSamplesBuffer = new List<float>();
-    List<float> samplingIntervals = new List<float>();
+    private List<Vector2> userRealPositionSamples = new List<Vector2>();
 
-    float lastSamplingTime = 0;
+    private List<Vector2> userRealPositionSamplesBuffer = new List<Vector2>();
+    private List<Vector2> userVirtualPositionSamples = new List<Vector2>();
+    private List<Vector2> userVirtualPositionSamplesBuffer = new List<Vector2>();
+    private List<float> translationGainSamples = new List<float>();
+    private List<float> translationGainSamplesBuffer = new List<float>();
+    private List<float> injectedTranslationSamples = new List<float>();
+    private List<float> injectedTranslationSamplesBuffer = new List<float>();
+    private List<float> rotationGainSamples = new List<float>();
+    private List<float> rotationGainSamplesBuffer = new List<float>();
+
+    // NOTE: IN THE FUTURE, WE MIGHT WANT TO LOG THE INJECTED VALUES DIVIDED BY TIME, SO IT'S MORE CONSISTENT AND NO DEPENDENT ON THE FRAMERATE
+    private List<float> injectedRotationFromRotationGainSamples = new List<float>();
+
+    private List<float> injectedRotationFromRotationGainSamplesBuffer = new List<float>();
+    private List<float> curvatureGainSamples = new List<float>();
+    private List<float> curvatureGainSamplesBuffer = new List<float>();
+    private List<float> injectedRotationFromCurvatureGainSamples = new List<float>();
+    private List<float> injectedRotationFromCurvatureGainSamplesBuffer = new List<float>();
+    private List<float> injectedRotationSamples = new List<float>();
+    private List<float> injectedRotationSamplesBuffer = new List<float>();
+    private List<float> distanceToNearestBoundarySamples = new List<float>();
+    private List<float> distanceToNearestBoundarySamplesBuffer = new List<float>();
+    private List<float> distanceToCenterSamples = new List<float>();
+    private List<float> distanceToCenterSamplesBuffer = new List<float>();
+    private List<float> samplingIntervals = new List<float>();
+
+    private float lastSamplingTime = 0;
 
     //private bool testing = true;
 
     // Helper Varialbles
     //float startTime = float.MaxValue;
-    enum LoggingState { not_started, logging, paused, complete };
-    LoggingState state = LoggingState.not_started;
+    private enum LoggingState
+    { not_started, logging, paused, complete };
 
+    private LoggingState state = LoggingState.not_started;
 
     // MAKE SURE TO INITIALIZE ALL VALUES HERE
     // FOR NOW I JUST CARE ABOUT RESETS
-    void InitializeAllValues()
+    private void InitializeAllValues()
     {
         sumOfInjectedTranslation = 0;
         sumOfInjectedRotationFromRotationGain = 0;
@@ -137,9 +146,8 @@ public class StatisticsLogger : MonoBehaviour {
         lastSamplingTime = redirectionManager.GetTime();
     }
 
-
-    // IMPORTANT! The gathering of values has to be in LateUpdate to make sure the "Time.deltaTime" that's used by the gain sampling functions is the same ones that are considered when dividing by time elapsed 
-    // that we do when gatherin the samples from buffers. Otherwise it can be that we get the buffers from a deltaTime, then the same deltaTime is used later to calculate a buffer value for a gain, and then 
+    // IMPORTANT! The gathering of values has to be in LateUpdate to make sure the "Time.deltaTime" that's used by the gain sampling functions is the same ones that are considered when dividing by time elapsed
+    // that we do when gatherin the samples from buffers. Otherwise it can be that we get the buffers from a deltaTime, then the same deltaTime is used later to calculate a buffer value for a gain, and then
     // later on the division won't be fair!
     public void UpdateStats()
     {
@@ -182,7 +190,7 @@ public class StatisticsLogger : MonoBehaviour {
         }
     }
 
-    // Experiment Descriptors are given and 
+    // Experiment Descriptors are given and
     public void EndLogging()
     {
         if (state == LoggingState.logging)
@@ -271,7 +279,6 @@ public class StatisticsLogger : MonoBehaviour {
     {
         if (state == LoggingState.logging)
         {
-
         }
     }
 
@@ -415,7 +422,7 @@ public class StatisticsLogger : MonoBehaviour {
         }
     }
 
-    void UpdateFrameBasedValues()
+    private void UpdateFrameBasedValues()
     {
         ////if (testing)
         ////{
@@ -425,11 +432,10 @@ public class StatisticsLogger : MonoBehaviour {
         ////}
         //else
         //{
-        
         // Now we are letting the developer determine the movement manually in update, and we pull the info from redirector
         Event_User_Rotated(redirectionManager.deltaDir);
         Event_User_Translated(Utilities.FlattenedPos2D(redirectionManager.deltaPos));
-        
+
         userRealPositionSamplesBuffer.Add(redirectionManager.GetDeltaTime() * Utilities.FlattenedPos2D(redirectionManager.currPosReal));
         userVirtualPositionSamplesBuffer.Add(redirectionManager.GetDeltaTime() * Utilities.FlattenedPos2D(redirectionManager.currPos));
         distanceToNearestBoundarySamplesBuffer.Add(redirectionManager.GetDeltaTime() * redirectionManager.resetter.getDistanceToNearestBoundary());
@@ -437,7 +443,7 @@ public class StatisticsLogger : MonoBehaviour {
         //}
     }
 
-    void GenerateSamplesFromBufferValuesAndClearBuffers()
+    private void GenerateSamplesFromBufferValuesAndClearBuffers()
     {
         GetSampleFromBuffer(ref userRealPositionSamples, ref userRealPositionSamplesBuffer);
         GetSampleFromBuffer(ref userVirtualPositionSamples, ref userVirtualPositionSamplesBuffer);
@@ -452,7 +458,7 @@ public class StatisticsLogger : MonoBehaviour {
         GetSampleFromBuffer(ref distanceToCenterSamples, ref distanceToCenterSamplesBuffer);
     }
 
-    void GetSampleFromBuffer(ref List<float> samples, ref List<float> buffer, bool verbose = false)
+    private void GetSampleFromBuffer(ref List<float> samples, ref List<float> buffer, bool verbose = false)
     {
         float sampleValue = 0;
         foreach (float bufferValue in buffer)
@@ -470,7 +476,7 @@ public class StatisticsLogger : MonoBehaviour {
         buffer.Clear();
     }
 
-    void GetSampleFromBuffer(ref List<Vector2> samples, ref List<Vector2> buffer)
+    private void GetSampleFromBuffer(ref List<Vector2> samples, ref List<Vector2> buffer)
     {
         Vector2 sampleValue = Vector2.zero;
         foreach (Vector2 bufferValue in buffer)
@@ -482,7 +488,7 @@ public class StatisticsLogger : MonoBehaviour {
         buffer.Clear();
     }
 
-    void Event_Experiment_Ended()
+    private void Event_Experiment_Ended()
     {
         virtualDistancesTravelledBetweenResets.Add(virtualDistanceTravelledSinceLastReset);
         timeElapsedBetweenResets.Add(redirectionManager.GetTime() - timeOfLastReset);
@@ -502,7 +508,7 @@ public class StatisticsLogger : MonoBehaviour {
     //    return valueSum / timeSum;
     //}
 
-    Vector2 GetTimeWeightedSampleAverage(List<Vector2> sampleArray, List<float> sampleDurationArray)
+    private Vector2 GetTimeWeightedSampleAverage(List<Vector2> sampleArray, List<float> sampleDurationArray)
     {
         Vector2 valueSum = Vector2.zero;
         float timeSum = 0;
@@ -514,7 +520,7 @@ public class StatisticsLogger : MonoBehaviour {
         return sampleArray.Count != 0 ? valueSum / timeSum : Vector2.zero;
     }
 
-    float GetAverage(List<float> array)
+    private float GetAverage(List<float> array)
     {
         float sum = 0;
         foreach (float value in array)
@@ -524,7 +530,7 @@ public class StatisticsLogger : MonoBehaviour {
         return array.Count != 0 ? sum / array.Count : 0;
     }
 
-    float GetAverageOfAbsoluteValues(List<float> array)
+    private float GetAverageOfAbsoluteValues(List<float> array)
     {
         float sum = 0;
         foreach (float value in array)
@@ -534,7 +540,7 @@ public class StatisticsLogger : MonoBehaviour {
         return array.Count != 0 ? sum / array.Count : 0;
     }
 
-    Vector2 GetAverage(List<Vector2> array)
+    private Vector2 GetAverage(List<Vector2> array)
     {
         Vector2 sum = Vector2.zero;
         foreach (Vector2 value in array)
@@ -545,7 +551,7 @@ public class StatisticsLogger : MonoBehaviour {
     }
 
     // We're not providing a time-based version of this at this time
-    float GetMedian(List<float> array)
+    private float GetMedian(List<float> array)
     {
         if (array.Count == 0)
         {
@@ -561,12 +567,12 @@ public class StatisticsLogger : MonoBehaviour {
 
     // This would make more sense in the context of square-shaped environments
     // Normalizing by dividing by diameter
-    float GetTrackingAreaNormalizedValue(float distance)
+    private float GetTrackingAreaNormalizedValue(float distance)
     {
         return distance / redirectionManager.resetter.getTrackingAreaHalfDiameter();
     }
 
-    List<float> GetTrackingAreaNormalizedList(List<float> distances)
+    private List<float> GetTrackingAreaNormalizedList(List<float> distances)
     {
         List<float> retVal = new List<float>(distances);
         for (int i = 0; i < distances.Count; i++)
@@ -578,18 +584,18 @@ public class StatisticsLogger : MonoBehaviour {
 
     ////////////// LOGGING TO FILE
 
-    string RESULT_DIRECTORY = "Experiment Results/";
-    string SUMMARY_STATISTICS_DIRECTORY = "Summary Statistics/";
-    string SAMPLED_METRICS_DIRECTORY = "Sampled Metrics/";
+    private string RESULT_DIRECTORY = "Experiment Results/";
+    private string SUMMARY_STATISTICS_DIRECTORY = "Summary Statistics/";
+    private string SAMPLED_METRICS_DIRECTORY = "Sampled Metrics/";
 
-    XmlWriter xmlWriter;
+    private XmlWriter xmlWriter;
     public string SUMMARY_STATISTICS_XML_FILENAME = "SimulationResults";
-    const string XML_ROOT = "Experiments";
-    const string XML_ELEMENT = "Experiment";
+    private const string XML_ROOT = "Experiments";
+    private const string XML_ELEMENT = "Experiment";
 
-    StreamWriter csvWriter;
+    private StreamWriter csvWriter;
 
-    void Awake()
+    private void Awake()
     {
         RESULT_DIRECTORY = SnapshotGenerator.GetProjectPath() + RESULT_DIRECTORY;
         SUMMARY_STATISTICS_DIRECTORY = RESULT_DIRECTORY + SUMMARY_STATISTICS_DIRECTORY;
@@ -654,7 +660,7 @@ public class StatisticsLogger : MonoBehaviour {
             }
             csvWriter.WriteLine();
             // Write Values
-            csvWriter.Write(redirectionManager.startTimeOfProgram +";");
+            //csvWriter.Write(redirectionManager.startTimeOfProgram +";");
             foreach (Dictionary<string, string> experimentResult in experimentResults)
             {
                 foreach (string value in experimentResult.Values)
@@ -663,12 +669,10 @@ public class StatisticsLogger : MonoBehaviour {
                 }
                 csvWriter.WriteLine();
             }
-            
         }
         csvWriter.Flush();
         csvWriter.Close();
     }
-
 
     public void LogOneDimensionalExperimentSamples(string experimentDecriptorString, string measuredMetric, List<float> values)
     {
@@ -719,7 +723,6 @@ public class StatisticsLogger : MonoBehaviour {
             batchFileWriter = new StreamWriter(experimentSamplesDirectory);
             for (int expCode = 1; expCode <= 3; expCode++)
             {
-
                 for (int algoCode = 1; algoCode <= 6; algoCode++)
                 {
                     batchFileWriter.WriteLine("start Simulation.exe -batchmode " + expCode + pathCode + algoCode);

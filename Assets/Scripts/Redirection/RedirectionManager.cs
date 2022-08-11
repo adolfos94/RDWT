@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Redirection;
 
+[RequireComponent(typeof(Redirector), typeof(Resetter), typeof(ResetTrigger))]
 public class RedirectionManager : MonoBehaviour
 {
     public enum MovementController
@@ -97,37 +98,25 @@ public class RedirectionManager : MonoBehaviour
     [HideInInspector]
     public bool inReset = false;
 
-    [HideInInspector]
-    public string startTimeOfProgram;
-
     private float simulatedTime = 0;
 
     private void Awake()
     {
-        startTimeOfProgram = System.DateTime.Now.ToString("yyyy MM dd HH:mm:ss");
-
         GetTrackedSpace();
         GetSimulatedHead();
 
-        GetSimulationManager();
-        SetReferenceForSimulationManager();
-        simulationManager.Initialize();
+        GetSimulationManager(); //?
+        simulationManager.Initialize(); //?
 
         GetRedirector();
         GetResetter();
         GetResetTrigger();
-        GetTrailDrawer();
 
+        GetTrailDrawer();
         GetKeyboardController();
         GetBodyHeadFollower();
-        SetReferenceForRedirector();
-        SetReferenceForResetter();
-        SetReferenceForResetTrigger();
-        SetBodyReferenceForResetTrigger();
-        SetReferenceForTrailDrawer();
 
-        SetReferenceForKeyboardController();
-        SetReferenceForBodyHeadFollower();
+        SetBodyReferenceForResetTrigger();
 
         if (resetTrigger != null)
             resetTrigger.Initialize();
@@ -208,114 +197,92 @@ public class RedirectionManager : MonoBehaviour
         body.rotation = Quaternion.LookRotation(Utilities.FlattenedDir3D(headTransform.forward), Vector3.up);
     }
 
-    private void SetReferenceForRedirector()
-    {
-        if (redirector != null)
-            redirector.redirectionManager = this;
-    }
-
-    private void SetReferenceForResetter()
-    {
-        if (resetter != null)
-            resetter.redirectionManager = this;
-    }
-
-    private void SetReferenceForResetTrigger()
-    {
-        if (resetTrigger != null)
-            resetTrigger.redirectionManager = this;
-    }
-
-    private void SetBodyReferenceForResetTrigger()
-    {
-        if (resetTrigger != null && body != null)
-        {
-            // NOTE: This requires that getBody gets called before this
-            resetTrigger.bodyCollider = body.GetComponentInChildren<CapsuleCollider>();
-        }
-    }
-
-    private void SetReferenceForTrailDrawer()
-    {
-        if (trailDrawer != null)
-        {
-            trailDrawer.redirectionManager = this;
-        }
-    }
-
-    private void SetReferenceForSimulationManager()
-    {
-        if (simulationManager != null)
-        {
-            simulationManager.redirectionManager = this;
-        }
-    }
-
-    private void SetReferenceForKeyboardController()
-    {
-        if (keyboardController != null)
-        {
-            keyboardController.redirectionManager = this;
-        }
-    }
-
-    private void SetReferenceForBodyHeadFollower()
-    {
-        if (bodyHeadFollower != null)
-        {
-            bodyHeadFollower.redirectionManager = this;
-        }
-    }
-
-    private void GetRedirector()
-    {
-        redirector = this.gameObject.GetComponent<Redirector>();
-        if (redirector == null)
-            this.gameObject.AddComponent<NullRedirector>();
-        redirector = this.gameObject.GetComponent<Redirector>();
-    }
-
-    private void GetResetter()
-    {
-        resetter = this.gameObject.GetComponent<Resetter>();
-        if (resetter == null)
-            this.gameObject.AddComponent<NullResetter>();
-        resetter = this.gameObject.GetComponent<Resetter>();
-    }
-
-    private void GetResetTrigger()
-    {
-        resetTrigger = this.gameObject.GetComponentInChildren<ResetTrigger>();
-    }
-
-    private void GetTrailDrawer()
-    {
-        trailDrawer = this.gameObject.GetComponent<TrailDrawer>();
-    }
-
-    private void GetSimulationManager()
-    {
-        simulationManager = this.gameObject.GetComponent<SimulationManager>();
-    }
-
-    private void GetKeyboardController()
-    {
-        keyboardController = simulatedHead.GetComponent<KeyboardController>();
-    }
-
-    private void GetBodyHeadFollower()
-    {
-        bodyHeadFollower = body.GetComponent<HeadFollower>();
-    }
-
+    /// <summary>
+    /// Finds Tracked Space GameObject
+    /// </summary>
     private void GetTrackedSpace()
     {
         trackedSpace = transform.Find("Tracked Space");
     }
 
+    /// <summary>
+    /// Finds Simulated User Head
+    /// </summary>
     private void GetSimulatedHead()
     {
         simulatedHead = transform.Find("Simulated User").Find("Head");
+    }
+
+    /// <summary>
+    /// Get Redirector Component
+    /// </summary>
+    private void GetRedirector()
+    {
+        redirector = this.gameObject.GetComponent<Redirector>();
+        redirector.redirectionManager = this;
+    }
+
+    /// <summary>
+    /// Get Resseter Component
+    /// </summary>
+    private void GetResetter()
+    {
+        resetter = this.gameObject.GetComponent<Resetter>();
+        resetter.redirectionManager = this;
+    }
+
+    /// <summary>
+    /// Get Resseter Trigger
+    /// </summary>
+    private void GetResetTrigger()
+    {
+        resetTrigger = this.gameObject.GetComponentInChildren<ResetTrigger>();
+        resetTrigger.redirectionManager = this;
+    }
+
+    /// <summary>
+    /// Get Trail Drawer
+    /// </summary>
+    private void GetTrailDrawer()
+    {
+        // TODO: See whats this
+        trailDrawer = this.gameObject.GetComponent<TrailDrawer>();
+        trailDrawer.redirectionManager = this;
+    }
+
+    /// <summary>
+    /// Get Keyboard Controller for Unity Play Mode
+    /// </summary>
+    private void GetKeyboardController()
+    {
+        keyboardController = simulatedHead.GetComponent<KeyboardController>();
+        keyboardController.redirectionManager = this;
+    }
+
+    /// <summary>
+    /// Get Body-Head follower.
+    /// </summary>
+    private void GetBodyHeadFollower()
+    {
+        bodyHeadFollower = body.GetComponent<HeadFollower>();
+        bodyHeadFollower.redirectionManager = this;
+    }
+
+    /// <summary>
+    /// Set Body's Capsule Collider reference
+    /// </summary>
+    private void SetBodyReferenceForResetTrigger()
+    {
+        if (resetTrigger == null || body == null)
+            return;
+
+        resetTrigger.bodyCollider = body.GetComponentInChildren<CapsuleCollider>();
+    }
+
+    private void GetSimulationManager()
+    {
+        simulationManager = this.gameObject.GetComponent<SimulationManager>();
+        simulationManager.redirectionManager = this;
     }
 
     private void UpdateCurrentUserState()
@@ -370,14 +337,6 @@ public class RedirectionManager : MonoBehaviour
         redirector = null;
     }
 
-    public void UpdateRedirector(System.Type redirectorType)
-    {
-        RemoveRedirector();
-        this.redirector = (Redirector)this.gameObject.AddComponent(redirectorType);
-        //this.redirector = this.gameObject.GetComponent<Redirector>();
-        SetReferenceForRedirector();
-    }
-
     public void RemoveResetter()
     {
         this.resetter = this.gameObject.GetComponent<Resetter>();
@@ -386,17 +345,21 @@ public class RedirectionManager : MonoBehaviour
         resetter = null;
     }
 
+    public void UpdateRedirector(System.Type redirectorType)
+    {
+        RemoveRedirector();
+        this.redirector = (Redirector)this.gameObject.AddComponent(redirectorType);
+        GetRedirector();
+    }
+
     public void UpdateResetter(System.Type resetterType)
     {
         RemoveResetter();
-        if (resetterType != null)
-        {
-            this.resetter = (Resetter)this.gameObject.AddComponent(resetterType);
-            //this.resetter = this.gameObject.GetComponent<Resetter>();
-            SetReferenceForResetter();
-            if (this.resetter != null)
-                this.resetter.Initialize();
-        }
+
+        this.resetter = (Resetter)this.gameObject.AddComponent(resetterType);
+        GetResetter();
+        if (this.resetter != null)
+            this.resetter.Initialize();
     }
 
     public void UpdateTrackedSpaceDimensions(float x, float z)

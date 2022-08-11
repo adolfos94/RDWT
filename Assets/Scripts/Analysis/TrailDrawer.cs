@@ -4,37 +4,39 @@ using System.Collections.Generic;
 using System.Linq;
 using Redirection;
 
-public class TrailDrawer : MonoBehaviour {
-
+public class TrailDrawer : MonoBehaviour
+{
     //[SerializeField]
-    
-    LayerMask trailLayer;
+
+    private LayerMask trailLayer;
 
     [SerializeField]
-    bool drawRealTrail = true, drawVirtualTrail = true;
+    private bool drawRealTrail = true, drawVirtualTrail = true;
 
     [SerializeField, Range(0.01f, 1)]
-    float MIN_DIST = 0.1f;
-    [SerializeField, Range(0.01f, 0.5f)]
-    float PATH_WIDTH = 0.05f;
-    const float PATH_HEIGHT = 0.0001f;
-    
-    [SerializeField]
-    Color realTrailColor = new Color(1, 1, 0, 0.5f), virtualPathColor = new Color(0, 0, 1, 0.5f);
+    private float MIN_DIST = 0.1f;
 
-    List<Vector3> realTrailVertices = new List<Vector3>(), virtualTrailVertices = new List<Vector3>();
+    [SerializeField, Range(0.01f, 0.5f)]
+    private float PATH_WIDTH = 0.05f;
+
+    private const float PATH_HEIGHT = 0.0001f;
+
+    [SerializeField]
+    private Color realTrailColor = new Color(1, 1, 0, 0.5f), virtualPathColor = new Color(0, 0, 1, 0.5f);
+
+    private List<Vector3> realTrailVertices = new List<Vector3>(), virtualTrailVertices = new List<Vector3>();
 
     public const string REAL_TRAIL_NAME = "Real Trail", VIRTUAL_TRAIL_NAME = "Virtual Trail";
 
-    Transform trailParent = null, realTrail = null, virtualTrail = null;
-    Mesh realTrailMesh, virtualTrailMesh;
+    private Transform trailParent = null, realTrail = null, virtualTrail = null;
+    private Mesh realTrailMesh, virtualTrailMesh;
 
     [HideInInspector]
     public RedirectionManager redirectionManager;
 
-    bool isLogging;
+    private bool isLogging;
 
-    void Awake()
+    private void Awake()
     {
         trailParent = new GameObject("Trails").transform;
         trailParent.parent = this.transform;
@@ -56,12 +58,12 @@ public class TrailDrawer : MonoBehaviour {
         }
     }
 
-    void OnEnable()
+    private void OnEnable()
     {
         BeginTrailDrawing();
     }
 
-    void OnDisable()
+    private void OnDisable()
     {
         StopTrailDrawing();
         if (drawRealTrail)
@@ -91,7 +93,7 @@ public class TrailDrawer : MonoBehaviour {
             Destroy(trail.gameObject);
     }
 
-    void Initialize(string trailName, Color trailColor, List<Vector3> vertices, out Transform trail, out Mesh trailMesh)
+    private void Initialize(string trailName, Color trailColor, List<Vector3> vertices, out Transform trail, out Mesh trailMesh)
     {
         vertices.Clear();
         //Material pathMaterial = new Material(Shader.Find("GUI/Text Shader"));
@@ -113,10 +115,9 @@ public class TrailDrawer : MonoBehaviour {
         trail.gameObject.layer = trailLayer;
     }
 
-	
-	// Update is called once per frame
-	void LateUpdate () {
-
+    // Update is called once per frame
+    private void LateUpdate()
+    {
         if (isLogging)
         {
             if (drawRealTrail)
@@ -132,7 +133,7 @@ public class TrailDrawer : MonoBehaviour {
         }
     }
 
-    void UpdateTrailPoints(List<Vector3> vertices, Transform relativeTransform, Mesh mesh, float pathHeight = PATH_HEIGHT)
+    private void UpdateTrailPoints(List<Vector3> vertices, Transform relativeTransform, Mesh mesh, float pathHeight = PATH_HEIGHT)
     {
         Vector3 currentPoint = Utilities.FlattenedPos3D(redirectionManager.headTransform.position, pathHeight);
         currentPoint = Utilities.GetRelativePosition(currentPoint, relativeTransform);
@@ -154,7 +155,7 @@ public class TrailDrawer : MonoBehaviour {
     /// <param name="pathColor"></param>
     /// <param name="parent"></param>
     /// <returns></returns>
-    GameObject DrawPath(List<Vector3> points3D, Color pathColor, Transform parent, LayerMask pathLayer)
+    private GameObject DrawPath(List<Vector3> points3D, Color pathColor, Transform parent, LayerMask pathLayer)
     {
         //Material pathMaterial = new Material(Shader.Find("GUI/Text Shader"));
         Material pathMaterial = new Material(Shader.Find("GUI/Text Shader"));
@@ -176,8 +177,8 @@ public class TrailDrawer : MonoBehaviour {
         return path;
     }
 
-
     #region MeshUtils
+
     public static void UpdateLine(Mesh mesh, Vector3[] points,
         Vector3 norm, float width, bool closedLoop = false,
         float aspect = 1.0f)
@@ -204,7 +205,7 @@ public class TrailDrawer : MonoBehaviour {
     /// <summary>
     /// Generates the necessary points to create a constant-width line
     /// along a series of points with surface normal to some vector,
-    /// optionally forming a closed loop (last points connect to first 
+    /// optionally forming a closed loop (last points connect to first
     /// points).
     /// </summary>
     /// <param name="points">A list of points defining the line.</param>
@@ -226,7 +227,6 @@ public class TrailDrawer : MonoBehaviour {
 
         for (int i = 0; i < points.Length; i++)
         {
-
             GetPrevAndNext(points, i, out fromPrev, out toNext,
                 closedLoop);
 
@@ -251,11 +251,10 @@ public class TrailDrawer : MonoBehaviour {
         }
 
         return output;
-
     }
 
     /// <summary>
-    /// Generates an array of point indices defining triangles for a line 
+    /// Generates an array of point indices defining triangles for a line
     /// strip as generated by GenerateLinePoints.
     /// </summary>
     /// <param name="numPoints">The number of points in the input line.
@@ -290,7 +289,7 @@ public class TrailDrawer : MonoBehaviour {
         for (int i = 0; i < pts.Length; i++)
         {
             float v;
-            // if aspect were 1, then difference between last V and new V 
+            // if aspect were 1, then difference between last V and new V
             // would be delta between points / width?
             if (i > 0)
             {
@@ -345,7 +344,6 @@ public class TrailDrawer : MonoBehaviour {
         fromPrev.Normalize();
         toNext.Normalize();
     }
+
     #endregion MeshUtils
-
-
 }
