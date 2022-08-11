@@ -116,24 +116,20 @@ public class RedirectionManager : MonoBehaviour
         GetBodyHeadFollower();
 
         SetBodyReferenceForResetTrigger();
+    }
 
+    // Use this for initialization
+    private void Start()
+    {
         if (resetTrigger != null)
             resetTrigger.Initialize();
 
         if (resetter != null)
             resetter.Initialize();
 
-        headTransform = simulatedHead;
-    }
-
-    // Use this for initialization
-    private void Start()
-    {
         simulatedTime = 0;
+        headTransform = simulatedHead;
         UpdatePreviousUserState();
-
-        if (useManualTime)
-            Application.targetFrameRate = (int)targetFPS;
     }
 
     // Update is called once per frame
@@ -155,20 +151,10 @@ public class RedirectionManager : MonoBehaviour
             OnResetTrigger();
         }
 
-        if (inReset)
-        {
-            if (resetter != null)
-            {
-                resetter.ApplyResetting();
-            }
-        }
-        else
-        {
-            if (redirector != null)
-            {
-                redirector.ApplyRedirection();
-            }
-        }
+        if (inReset && resetter != null)
+            resetter.ApplyResetting();
+        else if (redirector != null)
+            redirector.ApplyRedirection();
 
         UpdatePreviousUserState();
         UpdateBodyPose();
@@ -217,7 +203,7 @@ public class RedirectionManager : MonoBehaviour
     /// </summary>
     private void GetRedirector()
     {
-        if (redirector == null) /// Set NullRedirector
+        if (redirector == null) // Set NullRedirector
             gameObject.AddComponent<NullRedirector>();
 
         redirector = this.gameObject.GetComponent<Redirector>();
@@ -229,7 +215,7 @@ public class RedirectionManager : MonoBehaviour
     /// </summary>
     private void GetResetter()
     {
-        if (resetter == null)
+        if (resetter == null) // Set NullResetter
             gameObject.AddComponent<NullResetter>();
 
         resetter = this.gameObject.GetComponent<Resetter>();
@@ -314,14 +300,11 @@ public class RedirectionManager : MonoBehaviour
 
     public void OnResetTrigger()
     {
-        //print("RESET TRIGGER");
         if (inReset)
             return;
-        //print("NOT IN RESET");
-        //print("Is Resetter Null? " + (resetter == null));
+
         if (resetter != null && resetter.IsResetRequired())
         {
-            //print("RESET WAS REQUIRED");
             resetter.InitializeReset();
             inReset = true;
         }
@@ -329,7 +312,6 @@ public class RedirectionManager : MonoBehaviour
 
     public void OnResetEnd()
     {
-        //print("RESET END");
         resetter.FinalizeReset();
         inReset = false;
     }
@@ -353,8 +335,9 @@ public class RedirectionManager : MonoBehaviour
     public void UpdateRedirector(System.Type redirectorType)
     {
         RemoveRedirector();
+
         this.redirector = (Redirector)this.gameObject.AddComponent(redirectorType);
-        GetRedirector();
+        redirector.redirectionManager = this;
     }
 
     public void UpdateResetter(System.Type resetterType)
@@ -362,7 +345,8 @@ public class RedirectionManager : MonoBehaviour
         RemoveResetter();
 
         this.resetter = (Resetter)this.gameObject.AddComponent(resetterType);
-        GetResetter();
+        resetter.redirectionManager = this;
+
         if (this.resetter != null)
             this.resetter.Initialize();
     }
@@ -371,6 +355,7 @@ public class RedirectionManager : MonoBehaviour
     {
         trackedSpace.localScale = new Vector3(x, 1, z);
         resetTrigger.Initialize();
+
         if (this.resetter != null)
             this.resetter.Initialize();
     }
