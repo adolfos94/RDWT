@@ -449,21 +449,6 @@ public class SimulationManager : MonoBehaviour
         // Disallow Walking
         userIsWalking = false;
 
-        // Stop Logging
-        redirectionManager.statisticsLogger.EndLogging();
-
-        // Gather Summary Statistics
-        redirectionManager.statisticsLogger.experimentResults.Add(redirectionManager.statisticsLogger.GetExperimentResultForSummaryStatistics(getExperimentDescriptor(setup)));
-
-        // Log Sampled Metrics
-        if (redirectionManager.statisticsLogger.logSampleVariables)
-        {
-            Dictionary<string, List<float>> oneDimensionalSamples;
-            Dictionary<string, List<Vector2>> twoDimensionalSamples;
-            redirectionManager.statisticsLogger.GetExperimentResultsForSampledVariables(out oneDimensionalSamples, out twoDimensionalSamples);
-            redirectionManager.statisticsLogger.LogAllExperimentSamples(experimentDescriptorToString(getExperimentDescriptor(setup)), oneDimensionalSamples, twoDimensionalSamples);
-        }
-
         // Take Snapshot In Next Frame (After User and Virtual Path Is Disabled)
         if (!runAtFullSpeed)
             takeScreenshot = true;
@@ -489,10 +474,6 @@ public class SimulationManager : MonoBehaviour
         // Log All Summary Statistics To File
         if (experimentIterator == experimentSetups.Count)
         {
-            if (averageTrialResults)
-                redirectionManager.statisticsLogger.experimentResults = mergeTrialSummaryStatistics(redirectionManager.statisticsLogger.experimentResults);
-            //redirectionManager.statisticsLogger.LogExperimentSummaryStatisticsResults(redirectionManager.statisticsLogger.experimentResults);
-            redirectionManager.statisticsLogger.LogExperimentSummaryStatisticsResultsSCSV(redirectionManager.statisticsLogger.experimentResults);
             Debug.Log("Last Experiment Complete");
             experimentComplete = true;
             if (redirectionManager.runInTestMode)
@@ -826,7 +807,7 @@ public class SimulationManager : MonoBehaviour
             //Debug.Log("Frames In Experiment: " + framesInExperiment);
             framesInExperiment = 0;
             float start = Time.realtimeSinceStartup;
-            redirectionManager.snapshotGenerator.TakeScreenshot(experimentDescriptorToString(getExperimentDescriptor(experimentSetups[experimentIterator - 1]))); // Snapshot pertains to the previous experiment
+
             Debug.Log("Time Spent For Snapshot Generation: " + (Time.realtimeSinceStartup - start));
             takeScreenshot = false;
             if (experimentIterator == experimentSetups.Count)
@@ -842,10 +823,6 @@ public class SimulationManager : MonoBehaviour
         if (experimentInProgress && !userIsWalking)
         {
             userIsWalking = true;
-            //// Allow Walking
-            //UserController.allowWalking = true;
-            // Start Logging
-            redirectionManager.statisticsLogger.BeginLogging();
         }
 
         if (experimentInProgress && userIsWalking)

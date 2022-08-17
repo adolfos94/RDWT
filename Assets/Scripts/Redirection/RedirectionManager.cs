@@ -68,12 +68,6 @@ public class RedirectionManager : MonoBehaviour
     public KeyboardController keyboardController;
 
     [HideInInspector]
-    public SnapshotGenerator snapshotGenerator;
-
-    [HideInInspector]
-    public StatisticsLogger statisticsLogger;
-
-    [HideInInspector]
     public HeadFollower bodyHeadFollower;
 
     [HideInInspector]

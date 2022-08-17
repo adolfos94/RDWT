@@ -769,8 +769,6 @@ GameObject:
   - component: {fileID: 400276}
   - component: {fileID: 11417688}
   - component: {fileID: 11481868}
-  - component: {fileID: 11411412}
-  - component: {fileID: 11477922}
   - component: {fileID: 11489142}
   m_Layer: 0
   m_Name: Redirected Walking Manager
@@ -827,8 +825,6 @@ MonoBehaviour:
   simulationManager: {fileID: 0}
   simulatedWalker: {fileID: 0}
   keyboardController: {fileID: 0}
-  snapshotGenerator: {fileID: 0}
-  statisticsLogger: {fileID: 0}
   bodyHeadFollower: {fileID: 0}
   currPos: {x: 0, y: 0, z: 0}
   currPosReal: {x: 0, y: 0, z: 0}
@@ -870,39 +866,6 @@ MonoBehaviour:
   waypoints: []
   waypointIterator: 0
   userIsWalking: 0
---- !u!114 &11411412
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 174204}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82b887b769386134199dcfbe5b9b32a9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  redirectionManager: {fileID: 0}
-  logSampleVariables: 1
-  appendToFile: 0
-  samplingFrequency: 10
-  SUMMARY_STATISTICS_XML_FILENAME: SimulationResults
---- !u!114 &11477922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 174204}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d1d8fcdb37f9bf145a7d76a20031d728, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  redirectionManager: {fileID: 0}
-  resWidth: 2048
-  resHeight: 2048
-  targetCamera: {fileID: 0}
 --- !u!114 &11489142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1098,7 +1061,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &22485584
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1615,15 +1578,15 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 9500000, guid: 24f8d6aa660f9444ab0544d85c672e4a, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 24f8d6aa660f9444ab0544d85c672e4a, type: 3}
---- !u!4 &8652837168900179832 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 400096, guid: 24f8d6aa660f9444ab0544d85c672e4a,
-    type: 3}
-  m_PrefabInstance: {fileID: 8652837168899792280}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &8652837168899693210 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 100098, guid: 24f8d6aa660f9444ab0544d85c672e4a,
+    type: 3}
+  m_PrefabInstance: {fileID: 8652837168899792280}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8652837168900179832 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 400096, guid: 24f8d6aa660f9444ab0544d85c672e4a,
     type: 3}
   m_PrefabInstance: {fileID: 8652837168899792280}
   m_PrefabAsset: {fileID: 0}
